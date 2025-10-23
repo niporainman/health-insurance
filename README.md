@@ -1,12 +1,58 @@
-# React + Vite
+# Health Insurance Web App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-featured React + Firebase web application that connects **users**, **health providers (HPs)**, **HMOs**, and **admins** in a unified health insurance management system.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+### User Section
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Browse and purchase health insurance packages.
+- Schedule medical appointments with approved providers.
+- Register existing plans using an enrollee ID.
+- Track appointment and payment history.
+
+### Health Provider (HP) Section
+
+- Manage and accept appointments.
+- Fill treatment sheets and refer patients to other providers.
+
+### HMO Section
+
+- Approve or reject appointments.
+- Handle provider payments and user plan management.
+
+### Admin Section
+
+- Oversee all appointments, HMOs, users, and providers.
+- Manage system-wide data and performance analytics.
+
+---
+
+## Tech Stack
+
+- **Frontend:** React.js (Vite)
+- **Backend:** Firebase (Authentication, Firestore, Storage)
+- **Hosting:** Firebase Hosting
+- **Version Control:** Git + GitHub
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v16+)
+- npm or yarn
+- Firebase project configured
+
+### Installation
+
+```bash
+git clone https://github.com/niporainman/health-insurance.git
+cd health-insurance
+npm install
+npm run dev
+
+```
