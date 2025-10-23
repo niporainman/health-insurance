@@ -9,7 +9,7 @@ import { getFirestore } from 'firebase/firestore';
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-	apiKey: 'AIzaSyC15Bpx4eDkioF_qRD20FLxVUxTCtcsELY',
+	apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
 	authDomain: 'healthinsurancedemo-d130b.firebaseapp.com',
 	projectId: 'healthinsurancedemo-d130b',
 	storageBucket: 'healthinsurancedemo-d130b.firebasestorage.app',
