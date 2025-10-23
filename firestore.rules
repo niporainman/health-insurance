@@ -1,0 +1,127 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // USERS — Each user document ID = Firebase UID also hmos and hps can read 
+match /users/{userId} {
+  allow read: if request.auth != null; // any signed-in user can read
+  allow write: if request.auth.uid == userId; // only the user can write
+}
+
+
+    // HMOs — Each HMO document ID = Firebase UID
+    match /hmos/{hmoId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == hmoId;
+    }
+
+    // HEALTH PROVIDERS — Each HP document ID = Firebase UID
+    match /hps/{hpId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == hpId;
+    }
+
+    // ADMINS — Each admin document ID = Firebase UID
+    match /admins/{adminId} {
+      allow read, write: if request.auth != null && request.auth.uid == adminId;
+    }
+
+    // PLANS — Belong to HMOs
+    match /plans/{planId} {
+      allow read: if request.auth != null;
+
+      // Only allow write if the current HMO owns the plan
+      allow create, update, delete: if request.auth != null &&
+        request.auth.uid == request.resource.data.firebaseUid;
+    }
+    
+
+match /user_plans/{docId} {
+  // User can create a plan only for themselves
+  allow create: if request.auth != null &&
+  request.auth.uid == request.resource.data.firebaseUid;
+
+  // Read allowed if:
+  // - the signed-in user owns the plan, OR
+  // - their ID token contains a custom claim "admin": true
+  allow read: if request.auth != null &&
+ (
+   request.auth.uid == resource.data.firebaseUid ||
+   request.auth.token.admin == true
+ );
+}
+
+    
+match /appointments/{appointmentId} {
+  allow create: if request.auth != null &&
+    request.resource.data.firebaseUid == request.auth.uid &&
+    // enforce valid initial statuses
+    (request.resource.data.status in ['Pending', 'Approved', 'Rejected']);
+
+  allow read: if request.auth != null && (
+    resource.data.firebaseUid == request.auth.uid ||
+    resource.data.hmofirebaseUid == request.auth.uid ||
+    resource.data.hpfirebaseUid == request.auth.uid ||
+    request.auth.token.admin == true
+  );
+
+  allow update: if request.auth != null && (
+    // User cancels their own unapproved appointment
+   (
+      resource.data.firebaseUid == request.auth.uid &&
+      resource.data.hp_approved == 'Pending' &&
+      resource.data.hmo_approved == 'Pending' &&
+      (
+        // either they set status to Cancelled
+        request.resource.data.status == 'Cancelled'
+        // or they add/update cancelled_at timestamp
+        || (request.resource.data.cancelled_at is string)
+      )
+    )
+    // Or HMO or HP updating their sections, but only to valid statuses
+    || (
+      request.auth.uid == resource.data.hmofirebaseUid &&
+      (request.resource.data.hmo_approved in ['Pending', 'Approved', 'Rejected'])
+    )
+    || (
+      request.auth.uid == resource.data.hpfirebaseUid &&
+      (request.resource.data.hp_approved in ['Pending', 'Approved', 'Rejected'])
+    )
+  );
+}
+
+    // Doctors collection (only read access for everyone)
+    match /doctors/{doctorId} {
+      allow read: if true; // anyone can see available doctors
+      allow write: if request.auth != null 
+      && request.auth.token.admin == true; // only admins can add/edit doctors
+    }
+
+    // Talk to doctors (consultations)
+    match /talk_to_doctors/{consultationId} {
+      allow create: if request.auth != null; // any logged-in user can create
+      allow read: if request.auth != null
+      && (resource.data.firebaseUid == request.auth.uid // users can read their own
+      || request.auth.token.admin == true); // admins can read all
+      allow update, delete: if false; // users shouldn’t edit/delete after submission
+    }
+
+		// Notifications collection
+    match /notifications/{notificationId} {
+      allow read: if request.auth != null
+                  && request.auth.uid == resource.data.userId;
+
+      allow create: if request.auth != null;
+
+      // User can mark their own notification as read
+      allow update: if request.auth != null
+                    && request.auth.uid == resource.data.userId
+                    && request.resource.data.diff(resource.data).changedKeys().hasOnly(['read']);
+
+      allow delete: if false;
+    }
+
+
+
+  }
+}
