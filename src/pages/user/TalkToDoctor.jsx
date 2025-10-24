@@ -213,7 +213,7 @@ function TalkToDoctor() {
 
 	return (
 		<>
-			<UserHeader page_title={'Talk to Kolo Doctor'} />
+			<UserHeader page_title={'Talk to Health Insurance Demo Doctor'} />
 			<div className="db-content-box bg-white round-10 mb-25">
 				<form className="form-wrapper style-two" onSubmit={handleSubmit}>
 					<div className="row">
