@@ -1,7 +1,7 @@
 # Health Insurance Web App
 
 A full-featured React + Firebase web application that connects **users**, **health providers (HPs)**, **HMOs**, and **admins** in a unified health insurance management system.
-View Live Demo at health-insurance.niporainman.org
+View Live Demo at <a href='https://health-insurance.niporainman.org'>health-insurance.niporainman.org</a>
 ---
 
 ## Features
